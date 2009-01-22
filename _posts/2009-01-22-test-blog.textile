@@ -5,6 +5,8 @@ title: This is a sample title
 
 h1. {{ page.title }}
 
+p(meta). 2009/01/22
+
 h2. section
 
 Body of the blog
