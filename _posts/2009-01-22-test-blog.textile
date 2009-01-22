@@ -1,0 +1,16 @@
+---
+layout: post
+title: This is a sample title
+---
+
+h1. {{ page.title }}
+
+h2. section
+
+Body of the blog
+
+÷–Œƒ≤‚ ‘
+
+"link to google":http://www.google.com.
+
+
