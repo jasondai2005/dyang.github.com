@@ -1,0 +1,46 @@
+---
+layout: post
+title: 在Ubuntu上安装fcitx
+---
+
+h1. {{ page.title }}
+
+p(meta). 2008/07/27
+
+_____最近刚刚更换了新项目，开发工作从原来的Windows + .NET平台转移到了Linux + Java上，因此我需要重新安装和配置自己电脑上的操作系统和开发环境。
+操作系统选的是Ubuntu 7.10，安装还算顺利，然而在配置中文区域及输入法的时候却耗费了很多力气。现在把我经历的过程记录一下，希望能帮有同样需求的朋友少走些弯路。
+
+h2. 区域设置
+
+fcitx要求操作系统支持中文区域（locale）。首先用以下命令检查系统是否支持中文区域：
+<pre class="terminal"> <code>locale -a </code> </pre>
+如果输出的结果不包括zh_CN.*（比如zh_CN.UTF-8），那么就需要进行第二步的安装。
+
+h2. 安装中文区域
+
+通常，这意味着运行命令sudo locale-gen zh_CN，然而根据网上资料所述，由于Linux内核2.6.22-15中存在的一个bug，运行上述命令会导致系统挂起而无法继续。而该问题在2.6.22-14中并不存在，因此解决办法之一便是：
+* 重起系统，进入2.6.22-14 recovery mode
+* 运行命令： <pre class="terminal"> <code> sudo locale-gen zh_CN </code> </pre> 
+* 上述命令会迅速执行完毕，再运行locale -a，确认系统已经将中文区域列入支持范围
+* 重起系统，返回2.6.22-15内核
+* 运行sudo dpkg-reconfigure locales，完成区域文件的生成（如果需要的话）和重新配置
+
+h2. 安装fcitx
+
+运行如下命令：
+<pre class="terminal"> <code> sudo apt-get install fcitx </code> </pre>
+
+h2. 配置fcitx
+
+修改/etc/enviroment，增加如下一行：
+<pre class="terminal"> <code> LC_CTYPE=”zh_CN.UTF-8″ </code> </pre>
+在/etc/X11/Xsession.d/下新建95xinput文件，写入：
+<pre class="terminal"><code>export XMODIFIERS=”@im=fcitx”
+export XIM=fcitx
+export XIM_PROGRAM=fcitx
+export GTK_IM_MODULE=fcitx
+export QT_IM_MODULE=fcitx
+fcitx </code> </pre>
+重起X系统，在需要输入中文的时候运行Ctrl + Space就可以调出fcitx了。
+最后提醒一下：如果Ctrl + Space还无法调出fcitx，那么请确认X Input Method是被激活的。通常这意味着右键点击目标程序（如terminal）的输入区域，在弹出菜单中选Input Methods -> X Input Method。
+好了，祝大家fcitx用的愉快！
