@@ -8,7 +8,7 @@ h1. {{ page.title }}
 p(meta). 2008-12-30
 
 ----
-昨天我在一篇 "blog":http://dyang.wordpress.com.cn/2008/12/29/refactor_blog/ 里提到了自己想做的一自动化转换和发布blog的想法。说干就干，在一番google之后我写了下面这段脚本来自动转换blog：
+昨天我在一篇 "blog":http://dyang.github.com/2008/12/29/refactor-blog.html 里提到了自己想做的一自动化转换和发布blog的想法。说干就干，在一番google之后我写了下面这段脚本来自动转换blog：
 
 <pre>
 <code>
