@@ -1,0 +1,88 @@
+---
+layout: post
+title: 寻找问题的根源
+---
+
+h1. {{ page.title }}
+
+p(meta). 2008-11-19 
+
+----
+上午我和 "胡凯同学":http://iamhukai.blogspot.com 结对重构Cruise中的一段自动化测试代码（没错，我们不会因为一段代码是测试代码而降低对它的质量要求）。其中的一个方法是这样的：
+
+<pre><code>
+class Assert {
+    public static void assertWillHappen(CruiseSession cruiseSession, Matcher matcher) {
+        while (within(ONE_MINUTE)) {
+            try {
+                if (matcher.matches(cruiseSession)) {
+                    return;
+                }
+            } catch (PipelineNotFoundException e) {
+                // ignore and continue
+            }
+            sleep();
+        }
+        assertThat(cruiseSession, matcher);
+    }
+    // ...
+}
+</code></pre>
+
+这段测试代码会在一分钟之内不断轮循后台，如果系统状态通过了matcher所定义的检测条件就成功返回，否则就会产生一个断言错误，从而使测试失败。然而，它看上去却让人很不舒服。原本很简单的逻辑因为其中加了一个try/catch而变得复杂。虽然这样做是有原因的（在测试代码运行的时候，由于系统中使用了缓存，因此如果测试机器运行略微慢一些的话，在前面几秒钟之内访问是有可能产生pipeline还未创建完成的情况的），但补获异常并且吃掉它本身这种非常hack的做法却让我们非常起疑，多年的经验告诉我们，这里面一定有更深层次的问题！
+
+仔细查看代码，我们发现异常是从下面这段代码里产生的：
+
+<pre><code>
+class Pipelines {
+    public Pipeline findPipeline(String pipelineName) {
+        for (int i = 0; i < this.size(); i++) {
+            Pipeline pipeline = get(i);
+            if (pipeline.is(pipelineName)) {
+                return pipeline;
+            }
+        }
+        throw new PipelineNotFoundException("Pipeline " + pipelineName + " is not found");
+    }
+    // ...
+}
+</code></pre>
+
+看上去这段代码也没什么问题，我们在系统状态不正确的时候通过防范性手段来把问题马上暴露出去，这似乎说的过去。但是，这个异常却使得调用代码逻辑变得复杂起来，这问题该怎么解决呢？
+
+这时，胡凯同学想到了一个好办法。他拿起键盘，迅速地把代码改成了下面的样子：
+
+<pre><code>
+class Pipelines {
+    public Pipeline findPipeline(String pipelineName) {
+        for (int i = 0; i < this.size(); i++) {
+            Pipeline pipeline = get(i);
+            if (pipeline.is(pipelineName)) {
+                return pipeline;
+            }
+        }
+        return Pipeline.NULL;
+    }
+    // ....
+}
+</code></pre>
+
+Pipeline.NULL会创建一个NullPipeline，当matcher检测它的状态的时候，只需要简单地返回一个合适的默认值就可以了。这样一来，我们前面说的那段代码就被简化成了：
+
+<pre><code>
+class Assert {
+    public static void assertWillHappen(CruiseSession cruiseSession, Matcher matcher) {
+        while (within(ONE_MINUTE)) {
+            if (matcher.matches(cruiseSession)) {
+                return;
+            }
+            sleep();
+        }
+        assertThat(cruiseSession, matcher);
+    }
+    // ...
+}
+</code></pre>
+
+这次重构使我再次感受到了，当一段代码出了问题的时候，不应该简单地头痛医头、脚痛医脚，而应该去探寻产生问题的真正根源。
+

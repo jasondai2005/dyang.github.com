@@ -1,0 +1,62 @@
+---
+layout: post
+title: 用脚本自动转换和发布blog
+---
+
+h1. {{ page.title }}
+
+p(meta). 2008-12-30
+
+----
+昨天我在一篇 "blog":http://dyang.wordpress.com.cn/2008/12/29/refactor_blog/ 里提到了自己想做的一自动化转换和发布blog的想法。说干就干，在一番google之后我写了下面这段脚本来自动转换blog：
+
+<pre>
+<code>
+require 'rubygems'
+require 'redcloth'
+
+if ARGV.length < 1 then
+  puts "please tell me which textile file to convert: bc.rb [FILE]"
+else
+  filename = ARGV[0].split('/').last.split('.').first
+  blog = open(ARGV[0]) { |f| f.read}
+  textile = RedCloth.new blog
+  open('html/' + filename + '.html', 'w') {|f| f << textile.to_html }
+end
+</code>
+</pre>
+
+这段代码会把输入的textile文件自动转移成html文件。为了区分文件的类型，我重构了本地的blog目录，把原有的blog文本文件从blog根目录挪到了textile目录下，同时在textile同一级创建了html目录，用于保存转换以后的结果。
+
+格式转移搞定了，接下来就是自动发布。google了一番以后，我又写了下面这个脚本：
+
+<pre>
+<code>
+require 'xmlrpc/client.rb'
+
+if ARGV.length < 1 then
+  puts "please tell me which html file to post: bc.rb [FILE]"
+else
+  blog = ARGV[0]
+  blog_body = open(blog) { |f| f.read }
+  blog_content = {:title => 'test', :description => blog_body }
+
+  proxy = XMLRPC::Client.new("dyang.wordpress.com.cn", "/xmlrpc.php", 80)
+  begin
+    puts "posting new blog:"
+    resp = proxy.call("metaWeblog.newPost", "1", "myusername", "mypassword", blog_content, false)
+    puts resp
+  rescue XMLRPC::FaultException => e
+    puts "ERROR: Code: #{e.faultCode}"
+    puts "ERROR: Msg: #{e.faultString}"
+  end
+end
+
+</code>
+</pre>
+
+这段脚本非常好理解，它调用了Wordpress支持的metaWeblog API，通过传入适当的参数来实现blog的发布。但是目前我只能用它来发布英文内容，一旦标题或者正文里有中文字符就会返回一个id为-32700的格式错误。google了一下， "这里":http://www.21andy.com/blog/20080217/959.html 提供了一种解决方案，但它要求修改服务器端的一个文件，而我的blog提供商是不允许这么做的。这让我很失望。看来，我需要再找一个地方托管我的blog了。
+
+顺便提一下的是，同事 "Tin":http://zztin.com/tin/ 提醒我Wordpress也支持邮件发布。然而让我再次失望的是，我现在的blog提供商并没有开放这个功能，而且也没有办法自己上传或者加载plugin去支持。发邮件去问也没有回应，看来我也许真的要考虑迁出了。
+
+

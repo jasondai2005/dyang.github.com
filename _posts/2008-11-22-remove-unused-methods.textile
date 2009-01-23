@@ -1,0 +1,39 @@
+---
+layout: post
+title: 自动删除不需要的方法调用
+---
+
+h1. {{ page.title }}
+
+p(meta). 2008-11-22
+
+----
+在ThoughtWorks，我们对重构时可用的一些技巧非常着迷。相比于挽起袖子来进行一次次“胆大包天”的大幅重构，我们更喜欢把重构分解成一个个小且可控的步骤，分而治之。下面就是一例：
+
+上周五，我和克里斯同学在测我们新写的数据库迁移脚本时发现代码中反复出现下面两句： 
+<pre><code>DbFixture db = new DbFixture();
+db.initialize();</code></pre>
+
+问题出现了：1）当DbFixture被实例化以后，它还不能被直接使用，用户必须要调用initialize方法去初始化其状态，否则任何对dbFixture实例的方法调用都会导致未知的错误；2）用户在每次使用DbFixture的时候都必须要重复这两句方法调用，这是一种重复。
+
+在仔细读了initialize方法之后，我和克里斯认为DbFixture的构造函数完全可以自己调用这个方法，从而可以解决上述两个问题。那么怎么改呢？
+
+方法一：
+
+# 修改DbFixture的构造函数，让它在退出函数前调用initialize方法。
+# 手动找到并删除所有调用initialize的外部代码。
+# 把initialize从public访问级别改成private。
+
+这种方法的好处是比较直观。但问题在于第2步比较费力，因为我们必须要手动去删除每一处外部引用，而我们当时已经有好几个测试类在引用initialize方法，这让我们又找到了方法二。
+
+方法二：
+
+# 在DbFixture内复制initialize并生成一个initialize_temp方法，确保其内容和initialize完全一致。
+# 修改DbFixture的构造函数，让它在退出函数前调用initialize_temp方法。
+# 删掉原有initialize方法的方法体，让它成为一个空方法。
+# 在initialize上执行inline重构（在intelliJ里意味着运行Ctrl + N）。所有外部调用全部自动删除！
+# 把initialize_temp重命名为initialize。
+# 把initialize从public访问级别改成private。
+
+方法二的关键点在第4步，通过适当运用inline自动地删除所有的外部调用。
+

@@ -1,0 +1,21 @@
+---
+layout: post
+title: Sunbird
+---
+
+h1. {{ page.title }}
+
+p(meta). 2008-12-16
+
+----
+这段时间我一直在找一个适合自己的日历软件，我的需求是：
+
+* 不要包含邮件功能。我在notes上处理公司邮件，在gmail里管理个人邮件，不希望再引入一个多余的邮件管理软件
+* 支持Linux，因为那是我日常最主要使用的操作系统
+* 支持CalDAV协议，这样我就可以通过它来访问我在google calender上的日历
+* 可以管理多个日历。我在google calender上面除了有个人的日历以外，还有一份和家人共享的日历
+* 简单，除了日历功能以外不要加入任何其它多余的功能
+
+经过一番搜寻，我最终选定了 "Sunbird":http://www.mozilla.org/projects/calendar/sunbird 。
+
+
