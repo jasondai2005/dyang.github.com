@@ -1,0 +1,28 @@
+---
+layout: post
+title: 用封装来解决代码重复
+---
+
+h1. {{ page.title }}
+
+p(meta). 2009-02-18 
+
+----
+最近一段时间，项目上改进了Cruise中artifact repository部分的设计，在原有的代码基础之上做了一次重构，同时加入了新的功能。
+
+在重构过程中，我们发现原有的代码存在不少的问题。比如说下面这个例子，为了得到存放一个特定job的artifact repository路径，原有的代码类似于:
+
+<pre><code>File artifactPath = new File(cruiseConfig.getArtifactRoot(), String.valueOf(jobId));</code></pre>
+
+这样写代码至少存在两个问题：
+
+* 重复：每次调用的时候都要做类似的文件名拼接
+* 暴露实现细节：artifact repository的内部存放结构属于Cruise中的领域设计细节，这一细节是有可能发生变化的（事实上在目前开发的Cruise 2.0中这一细节的确发生变化了）。我们应该通过面向对象的封装特性来隐藏这一细节，而不应该把它直接暴露在外面
+
+新的设计把artifact的内部实现细节封装给了一个ArtifactService类。其中findArtifact方法解决了上面的问题：
+
+<pre><code>public File findArtifact(JobIdentifier jobId) {
+  return new File(.....);
+}</pre></code>
+
+当系统中只有这一个方法了解artifact repository的内部结构时，再改动起来就非常容易了。
