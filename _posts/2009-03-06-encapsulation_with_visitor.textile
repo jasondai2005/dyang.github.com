@@ -1,0 +1,82 @@
+---
+layout: post
+title: 用visitor来封装实现细节
+---
+
+h1. {{ page.title }}
+
+p(meta). 2009-03-06
+
+前几天我写过一篇 "用封装来解决代码重复":http://dyang.github.com/2009/02/18/encapsulation.html ,其中谈到了设计缺少封装性所带来的一个问题────重复。其实，缺乏封装性所带来的问题还有很多，比如说对变化的适应性。
+
+下面我来举个实际的例子。用过Cruise的朋友都知道，Cruise里面有一个核心的概念叫pipeline。用户定义好他们想要的pipeline以后，Cruise就可以把这些pipeline从配置文件里读出来使用了。使用方式类似于这样：
+
+<pre><code>
+public class CruiseConfig {
+    List<Pipeline> pipelines = new ArrayList<Pipeline>();
+    
+    public List<Pipeline> getPipelines() {
+        return pipelines;
+    }
+}
+
+public class TriggerService {
+    public void trigger() {
+        for (Pipeline pipeline : cruiseConfig.pipelines) {
+            // ...
+        }
+    }
+}
+</code></pre>
+
+这里面有几个地方比较关键：
+
+* CruiseConfig里面包含了pipeline的定义信息，该信息目前是以ArrayList的形式保存在pipelines字段里
+* CruiseConfig通过一个getter把pipelines的定义信息直接暴露给外部使用者，也就是TriggerService
+* TriggerService直接访问cruiseConfig.pipelines以获得想要的pipeline定义信息
+* TriggerService只是众多外部使用者之一……
+
+这个设计最初并没有什么问题，直到最近我们决定在pipeline之上再引入一个新的概念────pipeline group。有了新的需求，再回过头来看这段代码里面所体现的模型，我们就发现原有设计的严重不足了。其中最主要的不足有：
+
+* 外部使用者不应该直接访问到pipeline，而是应该先访问group，再到pipeline
+* 即使为了向后兼容，我们暂时允许外部使用者直接访问pipeline的话（假定所有的pipeline都是在一个组里），由于CruiseConfig内部用于表示pipeline group的数据结构变化了，再把ArrayList原封不动地交给外面就是错误的
+* 如果要改，getPipelines方法已经有了不少的地方在调用，一个个地改工作量着实不小
+
+经过对这些问题的分析，我们发现问题的根源在于设计的封装性不足。也就是说，CruiseConfig向外暴露了不应该暴露的实现细节，而暴露的细节越多，外部对于这些细节的依赖程度就越高，一旦改动起来，其所带来的影响也就越大了。那么应该怎么解决它呢？
+
+经过一番重构，我们把代码改成了下面的样子：
+
+<pre><code>
+public class CruiseConfig {
+    List<Group> groups = new ArrayList<Group>();
+    
+    public void accept(PipelineVisitor visitor) {
+        for (Pipeline pipeline : defaultGroup()) {
+            visitor.visit(pipeline);
+        }
+    }
+}
+
+public interface PipelineVisitor {
+    public void visit(Pipeline pipeline);
+}
+
+public class TriggerService {
+    public void trigger() {
+        cruiseConfig.accept(new PipelineVisitor() {
+            public void visit(Pipeline pipeline) {
+                // ...
+            }
+        } );
+    }
+}
+</code></pre>
+
+其中最主要的变化有几处：
+
+* CruiseConfig不再直接向外部暴露pipelines的实现细节，因为这种细节对于外部来说是既不需要知道也不应该知道的
+* CruiseConfig按照某一种简单的约定来向外部提供pipeline信息，这种约定（在例子里是以PipelineVisitor接口的方式提供的）只把外部最关心的信息本身（pipeline对象）暴露出去，至于其它的细节（比如说pipeline是以什么方式存储的）则不会暴露了
+* TriggerService为了获得pipeline信息，现在只需要按照PipelineVisitor的定义去创建一个对象，然后把该对象交给CruiseConfig就可以了。这个对象只关心怎么做好自己的操作就可以了
+
+经过这样一番重构，CruiseConfig很好地把pipeline的实现细节封装起来，通过用一个简单而且明确的接口来向外界提供pipeline信息，它把外部对于pipeline定义的依赖程度降到了最低。以后如果再有关于pipeline存储方式或者设计方式的变化，只要外边的接口不变，那么使用者就不需要改变了。
+
