@@ -13,7 +13,7 @@ p(meta). 2009-03-18
 
 这个问题可以通过使用hg qfold命令来解决。做法是：
 
-* 运行hg qfold命令来把想要的两个文件加到一个新的patch里：
+* 运行hg qnew命令来把想要的两个文件加到一个新的patch里：
 <pre class="terminal">hg qnew -m "fold me into script" -I file1 file2 -f foldme.patch<code></code></pre>
 * 把刚创建的qfoldme弹出，使得script patch位于queue的最顶端：
 <pre class="terminal">hg qpop -f<code></code></pre>
