@@ -1,0 +1,26 @@
+---
+layout: post
+title: 用hg qfold来实现文件的增量更新
+---
+
+h1. {{ page.title }}
+
+p(meta). 2009-03-18
+
+在日常开发中，我常常使用mercurial提供的queue功能来对本地代码进行版本管理。然而，hg qrefresh不支持增量式更新的设计却让我非常头疼。
+
+举个例子：假设我本地queue里面已经有一个名为script的patch了，我在它的基础上又改了三个文件，现在我想把其中的两个文件更新到script patch里，用hg qrefresh的话就很别扭──直接运行hg qrefresh而不加任何参数会把所有三个文件更新上去，这是我不想看到的；而运行hg qrefresh -I file1 file2的话又会以这两个文件替换script patch里原有的所有内容，这更不是我想看到的！
+
+这个问题可以通过使用hg qfold命令来解决。做法是：
+
+* 运行hg qfold命令来把想要的两个文件加到一个新的patch里：
+<pre class="terminal">hg qnew -m "fold me into script" -I file1 file2 -f foldme.patch<code></code></pre>
+* 把刚创建的qfoldme弹出，使得script patch位于queue的最顶端：
+<pre class="terminal">hg qpop -f<code></code></pre>
+* 把foldme合并到script patch中去：
+<pre class="terminal">hg qfold foldme.patch<code></code></pre>
+
+这样一来，就可以把两个想要的文件更新到想要的patch中去了。
+
+大家还有什么其它的办法吗？
+
