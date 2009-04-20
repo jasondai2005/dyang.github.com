@@ -3,10 +3,6 @@ layout: post
 title: 用visitor来封装实现细节
 ---
 
-h1. {{ page.title }}
-
-p(meta). 2009-03-06
-
 前几天我写过一篇 "用封装来解决代码重复":http://dyang.github.com/2009/02/18/encapsulation.html ,其中谈到了设计缺少封装性所带来的一个问题────重复。其实，缺乏封装性所带来的问题还有很多，比如说对变化的适应性。
 
 下面我来举个实际的例子。用过Cruise的朋友都知道，Cruise里面有一个核心的概念叫pipeline。用户定义好他们想要的pipeline以后，Cruise就可以把这些pipeline从配置文件里读出来使用了。使用方式类似于这样：

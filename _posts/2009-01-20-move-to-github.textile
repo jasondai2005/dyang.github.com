@@ -3,11 +3,6 @@ layout: post
 title: 向github迁移
 ---
 
-h1. {{ page.title }}
-
-p(meta). 2009-01-20 
-
-----
 前段时间我在blog里提到了一些目前我所用的blog服务的 "不爽":http://dyang.github.com/2008/12/30/blog-automation.html ，从那开始我就一直在寻找替换方案，今天终于有了答案──github.com。
 
 没错，就是那个提供git repository空间和服务的站点。它前段时间推出的 "github pages":http://github.com/blog/272-github-pages 服务正好能满足我的要求：用git来管理blog内容，自动发布（git push origin master），用textile来写blog，用户有修改页面的自由度（这样我就可以加上google analytics等）……另外，由于我在github上已经拥有多个开源项目，我对github的使用流程非常熟悉，因此把blog也迁移过去对我来说是一件再好不过的事情了。

@@ -3,11 +3,6 @@ layout: post
 title: 用封装来解决代码重复
 ---
 
-h1. {{ page.title }}
-
-p(meta). 2009-02-18 
-
-----
 最近一段时间，项目上改进了Cruise中artifact repository部分的设计，在原有的代码基础之上做了一次重构，同时加入了新的功能。
 
 在重构过程中，我们发现原有的代码存在不少的问题。比如说下面这个例子，为了得到存放一个特定job的artifact repository路径，原有的代码类似于:
