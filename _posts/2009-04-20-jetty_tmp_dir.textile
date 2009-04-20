@@ -1,0 +1,22 @@
+---
+layout: post
+title: 在Jetty中定位临时文件目录
+---
+
+h1. {{ page.title }}
+
+p(meta). 2009-04-20
+
+今天花了不少时间改一个使用Jetty部署Web应用程序的bug，对Jetty中设置Web应用程序临时文件路径的规则有了一定了解。俗话说“好记性不如烂笔头”，现在把学到的知识整理一下，加深一下学习印象，呵呵。
+
+Jetty在启动一个Web应用程序的时候，会按照以下顺序来决定当前应用的临时文件目录（javax.servlet.context.tempdir）：
+
+* 通过WebAppContext.setTempDirectory设置的临时文件目录
+* 上下文中已经定义的javax.servlet.context.tempdir所对应的目录
+* ${jetty.home}/work目录
+* WEB-INF/work目录
+* ${java.io.tmpdir}目录
+
+在通过上述方式定位到一个目录后，Jetty会在其中按照jetty_host_port_virtualHost_contextPath_hash的格式创建一个子目录，并把该子目录作为临时文件目录注册给javax.servlet.context.tempdir。
+
+这里面需要注意的是，除了第一种（并且仅当该目录为Jetty创建的前提下）和最后一种使用场景下Jetty会在Web应用程序退出以后自动删除临时目录以外，其余场景Jetty都会保留临时文件目录。这就意味着，如果在同一目录下部署应用程序的新版本，那么很有可能会出现文件版本不一致的问题！请大家在使用的时候要格外小心。
