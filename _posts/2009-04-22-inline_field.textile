@@ -1,0 +1,64 @@
+---
+layout: post
+title: 重构技巧──inline类成员变量
+---
+
+这是今天在和 "李教授":http://whimet.blogspot.com pair的时候学到的：
+
+h3. 问题
+
+有一个这样的类定义（简化版）：
+
+<pre><code>
+public class OnCurrentActivityPage {
+  private String pipelineName;
+  
+  public OnCurrentActivityPage(ScenarioState scenarioState) {
+    this.pipelineName = scenarioState.pipelineName();
+  }
+
+  public void triggerPipeline() {
+    selenium.trigger(pipelineName);
+  }
+
+  public void rerunStage() {
+    selenium.rerun(pipelineName, stageName);
+  }
+
+  public void pausePipeline() {
+    selenium.pause(pipelineName);
+  }
+
+  // 很多其它方法也要用到pipelineName
+}
+</code></pre>
+
+我们发现在OnCurrentActivityPage构造函数里调用scenarioState.pipelineName()有bug，需要把它改成不缓存pipelineName而在每次需要它的时候直接调用scenarioState.pipelineName()。
+
+h3. 解决方案一（人工替换）
+
+最直接的办法是删掉pipelineName，把scenarioState保存成类成员变量，然后把所有使用pipelineName的代码替换成使用scenarioState.pipelineName()。由于这个类里面有不少方法（超过10个）需要修改，这个方案颇花时间。
+
+h3. 解决方案二（自动重构）
+
+Intellij支持对类成员变量做inline重构。但是前提是：
+
+* 成员变量必须在声明的同时做初始化
+* 成员变量必须被标记为final
+
+这两点要求都很容易满足。为了满足第一点，我们可以把pipelineName的初始化移到声明处：
+
+<pre><code>
+private String pipelineName = scenarioState.pipelineName();
+</code></pre>
+
+这时候IDE会报错说scenarioState没有定义，不要理它，因为inline的时候Intellij会把该代码原样移走。
+
+为了满足第二点，我们只需要把pipelineName标记为final：
+
+<pre><code>
+private final String pipelineName = scenarioState.pipelineName();
+</code></pre>
+
+然后，再在任何一个使用pipelineName的地方用Ctrl + N执行inline重构，并且指定重构范围为所有的pipelineName调用。转瞬之间，费时费力的重构被工具自动化完成了！
+
