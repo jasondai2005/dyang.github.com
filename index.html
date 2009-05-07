@@ -13,11 +13,19 @@ title: Happy Hacking
   </div>
 </div>
 <div class='home_box' id='home_right'>
-  <h2>Open Source</h2>
+  <h2>Categories</h2>
   <div id='github-projects'>
+    <div class="repo">
+      <h3><a href="/ci.html">持续集成 ({{ site.categories.ci | size }})</a></h3>
+      <h3><a href="/code.html">code ({{ site.categories.code | size }})</a></h3>
+      <h3><a href="/scm.html">版本控制 ({{ site.categories.scm | size }})</a></h3>
+      <h3><a href="/refactoring.html">重构 ({{ site.categories.refactoring | size }})</a></h3>
+      <h3><a href="/agile.html">敏捷 ({{ site.categories.agile | size }})</a></h3>
+    </div>
   </div>
 </div>
 
+<!--
 <script type="text/javascript" charset="utf-8">
   $.githubUser('dyang', function(data) {
     $('#github-projects').html('');
@@ -36,3 +44,4 @@ title: Happy Hacking
     });
   });
 </script>
+-->
