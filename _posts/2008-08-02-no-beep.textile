@@ -1,6 +1,7 @@
 ---
 layout: post
 title: 禁掉烦人的system beep
+categories: linux
 ---
 
 见过几种不同的方法，最绝的是修改/etc/modprobe.d文件，添加下面这行：

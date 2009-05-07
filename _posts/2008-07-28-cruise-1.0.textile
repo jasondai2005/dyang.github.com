@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Cruise 1.0正式发布!
+categories: continuous_integration
 ---
 
 今天，我所在的项目──Cruise──正式发布了第一个公众版本! 大家如果感兴趣可以点击 "这里":http://studios.thoughtworks.com/cruise-continuous-integration 获得更多信息：

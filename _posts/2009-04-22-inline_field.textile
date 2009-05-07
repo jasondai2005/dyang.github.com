@@ -1,6 +1,7 @@
 ---
 layout: post
 title: 重构技巧──inline类成员变量
+categories: refactoring code
 ---
 
 这是今天在和 "李教授":http://whimet.blogspot.com pair的时候学到的：

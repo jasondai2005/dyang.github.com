@@ -1,6 +1,7 @@
 ---
 layout: post
 title: 用封装来解决代码重复
+categories: code refactoring
 ---
 
 最近一段时间，项目上改进了Cruise中artifact repository部分的设计，在原有的代码基础之上做了一次重构，同时加入了新的功能。

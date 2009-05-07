@@ -1,6 +1,7 @@
 ---
 layout: post
 title: 两个有趣的alias
+categories: linux code
 ---
 
 配置Ubuntu环境，最常用的命令恐怕非apt-get install和aptitude search莫属。不愿每次都敲完整的命令，所以顺手配了两个alias：

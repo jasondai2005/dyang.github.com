@@ -1,6 +1,7 @@
 ---
 layout: post
 title: 在Jetty中定位临时文件目录
+category: others
 ---
 
 今天花了不少时间改一个使用Jetty部署Web应用程序的bug，对Jetty中设置Web应用程序临时文件路径的规则有了一定了解。俗话说“好记性不如烂笔头”，现在把学到的知识整理一下，加深一下学习印象，呵呵。

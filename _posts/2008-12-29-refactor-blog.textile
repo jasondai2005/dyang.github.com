@@ -1,6 +1,7 @@
 ---
 layout: post
 title: 重构blog
+category: refactoring
 ---
 
 同事Tin前几天写了一篇非常棒的blog "《重构我的blog》":http://zztin.com/tin/2008/12/refactoring_my_blog/ ，讲的是通过把树形结构的category分类转换成扁平结构的tag分类来更好地组织自己blog的内容，并方便外界订阅和查询。这篇文章给我了很多启示。联想到自己这段时间在使用blog时遇到的一些问题，我觉得是时候把自己管理blog的方式来重构一下了。

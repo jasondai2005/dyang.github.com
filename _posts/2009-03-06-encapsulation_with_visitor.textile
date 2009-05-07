@@ -1,6 +1,7 @@
 ---
 layout: post
 title: 用visitor来封装实现细节
+categories: refactoring code
 ---
 
 前几天我写过一篇 "用封装来解决代码重复":http://dyang.github.com/2009/02/18/encapsulation.html ,其中谈到了设计缺少封装性所带来的一个问题────重复。其实，缺乏封装性所带来的问题还有很多，比如说对变化的适应性。

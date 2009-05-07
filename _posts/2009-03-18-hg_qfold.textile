@@ -1,6 +1,7 @@
 ---
 layout: post
 title: 用hg qfold来实现文件的增量更新
+category: scm
 ---
 
 在日常开发中，我常常使用mercurial提供的queue功能来对本地代码进行版本管理。然而，hg qrefresh不支持增量式更新的设计却让我非常头疼。

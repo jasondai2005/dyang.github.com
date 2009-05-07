@@ -1,6 +1,7 @@
 ---
 layout: post
 title: 寻找问题的根源
+categories: code
 ---
 
 上午我和 "胡凯同学":http://iamhukai.blogspot.com 结对重构Cruise中的一段自动化测试代码（没错，我们不会因为一段代码是测试代码而降低对它的质量要求）。其中的一个方法是这样的：

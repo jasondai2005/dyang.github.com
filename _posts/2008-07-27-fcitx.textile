@@ -1,6 +1,7 @@
 ---
 layout: post
 title: 在Ubuntu上安装fcitx
+categories: linux
 ---
 
 最近刚刚更换了新项目，开发工作从原来的Windows + .NET平台转移到了Linux + Java上，因此我需要重新安装和配置自己电脑上的操作系统和开发环境。

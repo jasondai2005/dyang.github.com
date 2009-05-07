@@ -1,6 +1,7 @@
 ---
 layout: post
 title: 向github迁移
+category: others
 ---
 
 前段时间我在blog里提到了一些目前我所用的blog服务的 "不爽":http://dyang.github.com/2008/12/30/blog-automation.html ，从那开始我就一直在寻找替换方案，今天终于有了答案──github.com。

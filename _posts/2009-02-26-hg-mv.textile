@@ -1,6 +1,7 @@
 ---
 layout: post
 title: 在Mercurial中查看被重命名文件的历史
+category: scm
 ---
 
 在Mercurial中，如果我们通过hg mv oldname newname重命名并且提交了一个文件，那么通过hg log newname默认是无法看到该文件在重命名之前的历史的。如果想查看该文件在历史上的所有记录，那么可以使用-f参数：

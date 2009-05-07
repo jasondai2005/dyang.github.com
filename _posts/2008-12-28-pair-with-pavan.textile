@@ -1,6 +1,7 @@
 ---
 layout: post
 title: 一次有趣的开发经历
+categories: agile continuous_integration
 ---
 
 周五下午和同事Pavan一起结对编程，为Cruise 1.2增加svn external的支持。几个小时过后，我们提交的代码漂亮地通过了所有的单元/集成/验收测试。在这个过程中，我觉得有一些很有趣的细节非常能体现出我们的工作方式，所以现在把它们列出来：

@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Sunbird
+category: linux
 ---
 
 这段时间我一直在找一个适合自己的日历软件，我的需求是：

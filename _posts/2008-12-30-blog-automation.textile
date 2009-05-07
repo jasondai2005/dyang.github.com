@@ -1,6 +1,7 @@
 ---
 layout: post
 title: 用脚本自动转换和发布blog
+categories: refactoring code
 ---
 
 昨天我在一篇 "blog":http://dyang.github.com/2008/12/29/refactor-blog.html 里提到了自己想做的一自动化转换和发布blog的想法。说干就干，在一番google之后我写了下面这段脚本来自动转换blog：
