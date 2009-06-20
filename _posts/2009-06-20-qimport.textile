@@ -1,0 +1,20 @@
+---
+layout: post
+title: 用hg qimport和qfresh来合并未提交代码
+categories: scm
+---
+
+刚才发现自己的某一个hg工作目录里还有少量的修改没有提交，通过hg diff发现自己只是改了一个很显的spring使用错误，我不想针对这次修改再做一次单独的提交，而是想把它合并到此前的那次提交里，我该怎么办呢？
+
+如果我在一开始用的是hg qnew的方法来提交代码的话，那么问题就变的很简单了，我只需运行hg qrefresh即可。但是我当初用的是hg ci，也就是说，本地并没有一个被queue管理的patch可以刷新。那么，是不是还可以通过qrefresh的方法来解决呢？
+
+答案是肯定的，只不过要多走一步：
+
+* 首先，运行下面的命令，把tip导入hg queue：
+<pre class="terminal"><code>hg qimport -r tip</code></pre>
+
+* 然后就可以做qrefresh了：
+<pre class="terminal"><code>hg qrefresh</code></pre>
+
+值得一提的是，hg qimport除了可以把一个指定的已提交版本（比如在上面例子中的tip）导入queue中之外，还可以从一个指定的文件里导入。在实际项目开发中，我和同事们常用这种方法在不同机器之间共享patch，非常方便。
+
