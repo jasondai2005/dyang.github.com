@@ -7,6 +7,7 @@ else
     '---',
     'layout: post',
     'title: ',
+    'categories: refactoring code',
     '---',
     '',
     '',
