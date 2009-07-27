@@ -1,0 +1,39 @@
+---
+layout: post
+title: 用模板（template）格式化mercurial输出
+categories: scm
+---
+
+做为一款可能被众多第三方工具集成的工具软件，Mercurial内置了模板（template）功能，允许用户自定义Mercurial命令的输出格式。这不，今天我和同事 "许伟":http://www.blogjava.net/programmer/ 就需要把hg log的命令输出格式化成xml。
+
+根据 "这里":http://hgbook.red-bean.com/read/customizing-the-output-of-mercurial.html 的介绍，hg log支持--template参数，允许用户以文本形式结合Mercurial内置的大量关键字来定义想要的格式模板。这样，一个以xml为目标结果的hg log模板就大概是这个样子：
+
+<pre><code><changeset>
+  <rev>{node}</rev>
+  <author>{author|escape}</author>
+  <desc>{desc|escape}</desc>
+  <files>
+    <added>{file_adds|stringify|escape}</added>
+    <modified>{file_mods|stringify|escape}</modified>
+    <added>{file_adds|stringify|escape}</added>
+    <deleted>{file_dels|stringify|escape}</deleted>
+  </files>
+</changeset>
+</code></pre>
+
+请注意其中对stringify过滤器的使用。这个在文件处理过程中是必需的，因为file_adds等对象在Mercurial内部被称为generator，它们不是字符串，所以没有替换方法，不能直接用escape过滤器去做替换。这么用看上去像是个workaround，而事实上它也的确是。大家如果感兴趣的话可以参考Mercurial的 "这个bug":http://mercurial.selenic.com/bts/issue1164.  
+
+然而，这个模板存在一个问题：默认文件名是以空格来彼此区分的，所以如果有的文件名中包含空格，那么出来的结果是无法正确区分此文件和彼文件的。为了解决这个问题，我们就得用Mercurial的一个更高级的方法──样式（style）。
+
+和模板类似，样式也是以文本加关键字的组合来定义一个模板，但是有两点不同：1）样式对格式的要求更严格，2）样式必须保存在文件中。下面就是按照样式的要求重新定义的文件：
+
+<pre><code>
+changeset = '<changeset>\n<rev>{node}</rev>\n<author>{author}</author>\n<date>{date|date}</date>\n<files>\n<modified>\n{file_mods}</modified>\n<added>\n{file_adds}</added>\n</files>\n</changeset>'
+file_mod = '<file>{file_mod}</file>\n'
+file_add = '<file>{file_add}</file>\n'
+</code></pre>
+
+其中值得一提的是file_mods等关键字的使用，当Mercurial发现一个复数的关键字引用的时候，就会在定义文件中找它的单数定义。比如说我们在changeset中定义了{file_mods}，Mercurial就会在文件中寻找file_mod的单数定义。file_adds、file_dels等也都是一个道理。这样我们就可以很细粒度地去控制单个文件的输出格式了。
+
+让人略感遗憾的是，Mercurial对样式如何使用介绍的非常有限。大家如果感兴趣，可以去研究Mercurial自带的几个样式文件，它们位于Mercurial安装目录的templates下面。
+
