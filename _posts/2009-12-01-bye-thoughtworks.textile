@@ -4,7 +4,7 @@ title: 再见Thoughtorks！
 categories: ci agile thoughts
 ---
 
-已经很长时间没有写blog了。最近的几个月时间里我的工作和生活都发生了较大的变化：因为家庭原因，我离开了生活了六年之久的北京，来到了上海和妻子团聚;同时，我也因此而离开了"ThoughtWorks":http://www.thoughtworks.com ，加入了设计软件公司"Autodesk":http://www.autodesk.com 。
+已经很长时间没有写blog了。最近的几个月时间里我的工作和生活都发生了较大的变化：因为家庭原因，我离开了生活了六年之久的北京，来到了上海和妻子团聚;同时，我也因此而离开了 "ThoughtWorks":http://www.thoughtworks.com ，加入了设计软件公司 "Autodesk":http://www.autodesk.com 。
 
 回首过去的几年时间，我能很清晰地感觉到自己对软件开发的认识不断地发生着有趣的变化：
 
