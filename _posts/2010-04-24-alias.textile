@@ -34,7 +34,7 @@ Doskey会帮我把这条简化了的命令展开成：
 
 <pre class="terminal">doskey /macrofile=%userprofile%\macros.mac</pre>
 
-如果你像我一样主要使用Console2命令环境的话，那么在Console2配置中的Shell一项里把启动命令设成下面这样就一劳永逸了：
+如果你像我一样主要使用 "Console2":http://sourceforge.net/projects/console 命令环境的话，那么在Console2配置中的Shell一项里把启动命令设成下面这样就一劳永逸了：
 
 <pre class="terminal">cmd /k doskey /macrofile%\macros.mac</pre>
 
