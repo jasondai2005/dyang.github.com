@@ -1,0 +1,52 @@
+---
+layout: post
+title: 用Doskey在Windows下实现命令别名（alias）
+categories: shell
+---
+
+在Windows命令行下使用Doskey相关命令可以实现类似于Linux shell中的命令别名（alias）功能。
+
+举个例子，假如你和我一样每次想查看当前目录下的文件的时候总是先敲ls的话（Windows会温柔地提醒你ls命令不存在），那么你可以用下面的命令来创建一个从ls到dir的别名：
+
+<pre class="terminal">doskey ls=dir</pre>
+
+然后在同一个session里再敲ls命令就会执行dir了。
+
+如果你想再把命令搞得复杂点，比如说让它支持输入参数，那么也是有办法的。下面这条命令是我在工作时常用的：
+
+<pre class="terminal">doskey record=Connectivity.VaultPro.exe /record=Record\$1.autoscr /recordOpts=$2</pre>
+
+在使用的时候，我就可以敲入类似下面的的命令了：
+
+<pre class="terminal">record test GuiDump</pre>
+
+Doskey会帮我把这条简化了的命令展开成：
+
+<pre class="terminal">record=Connectivity.VaultPro.exe /record=Record\test.autoscr /recordOpts=GuiDump</pre>
+
+当然，这种直接通过敲入doskey命令来设定别名的方法有个缺陷，就是这些别名的生命周期仅限于你敲入时所打开的命令行session，一旦session关闭那么这些别名就失效了。如果这些命令是你一直常用的，那么可以考虑用下面方法把常用别名保存在文件里：
+
+<pre class="terminal">doskey /macros:all > %userprofile%\macros.mac</pre>
+
+这条命令的含义是把当前session已经设置好的所有别名都打印出来，并且通过管道的方式重定向到%userprofile%\macros.mac文件里。打开该文件，你会看到此前你定义的那些别名都是在的。
+
+有了这个文件，下次再打开一个新的命令行session的时候我们只需要把该文件重新加载一遍就好了，doskey也提供了相应的命令：
+
+<pre class="terminal">doskey /macrofile=%userprofile%\macros.mac</pre>
+
+如果你像我一样主要使用Console2命令环境的话，那么在Console2配置中的Shell一项里把启动命令设成下面这样就一劳永逸了：
+
+<pre class="terminal">cmd /k doskey /macrofile%\macros.mac</pre>
+
+有了这个文件，以后如果想增加、删除、修改别名的话直接打开它编辑即可。为此，我写了个别名来自动打开它：
+
+<pre class="terminal">alias=gvim "%userprofile%\macros.mac"</pre>
+
+在编译好并且保存以后，可以通过以下命令来刷新当前session：
+
+<pre class="terminal">reload=doskey /macrofile=%userprofile%\macros.mac</pre>
+
+
+
+
+
