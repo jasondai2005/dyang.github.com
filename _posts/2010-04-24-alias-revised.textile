@@ -36,7 +36,7 @@ Doskey会帮我把这条简化了的命令展开成：
 
 如果你像我一样主要使用 "Console2":http://sourceforge.net/projects/console 命令环境的话，那么在Console2配置中的Shell一项里把启动命令设成下面这样就一劳永逸了：
 
-<pre class="terminal">cmd /k doskey /macrofile%\macros.mac</pre>
+<pre class="terminal">cmd /k doskey /macrofile=%userprofile%\macros.mac</pre>
 
 有了这个文件，以后如果想增加、删除、修改别名的话直接打开它编辑即可。为此，我写了个别名来自动打开它：
 
